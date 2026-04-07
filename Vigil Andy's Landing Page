@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vigil Andy's — Keep the Vigils. Up the Ante.</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond&family=Rajdhani&display=swap" rel="stylesheet" />
+
+<style>
+body {
+  background: #0d0d0d;
+  color: #d4c5b0;
+  font-family: 'EB Garamond', serif;
+  overflow-x: hidden;
+}
+
+/* FIXED grain (no more overlay bug) */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* HERO FIX */
+.hero-video-wrap {
+  position: relative;
+  min-height: 100svh;
+  background: #000;
+}
+
+#hero-player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(13,13,13,0.7), rgba(13,13,13,1));
+  z-index: 2;
+}
+
+.btn-copper {
+  background: linear-gradient(135deg,#e87722,#b5651d);
+  padding: 16px 30px;
+  font-family: Rajdhani;
+  text-transform: uppercase;
+}
+
+/* reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: 1s;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+
+<body class="grain">
+
+<!-- HERO -->
+<section class="hero-video-wrap flex items-center justify-center text-center">
+
+<div class="hero-overlay"></div>
+
+<div class="relative z-10 px-6">
+
+<h1 style="text-shadow:0 0 40px rgba(200,200,200,0.25);" 
+class="text-5xl md:text-8xl mb-6 reveal">
+VIGIL ANDY'S
+</h1>
+
+<p style="text-shadow:0 0 20px rgba(200,200,200,0.2);" 
+class="text-xl md:text-3xl mb-10 reveal">
+Keep the vigils. Up the ante.
+</p>
+
+<a href="#single" class="btn-copper reveal">Enter</a>
+
+</div>
+</section>
+
+<!-- SINGLE -->
+<section id="single" class="py-24 px-6 max-w-6xl mx-auto">
+
+<div class="grid md:grid-cols-2 gap-10 items-center">
+
+<div>
+<img src="https://img.youtube.com/vi/XpUi67706ss/hqdefault.jpg"
+class="w-full rounded" />
+<a href="https://youtu.be/XpUi67706ss?si=93O7M35WToDkTovq" target="_blank"
+class="block mt-4 text-center btn-copper">
+Play Video
+</a>
+</div>
+
+<div>
+<h2 class="text-4xl mb-6">Copper Island</h2>
+
+<p class="mb-8">
+Sun-scorched earth and the aching process of becoming.
+</p>
+
+<div class="flex gap-4 flex-wrap">
+<a href="https://open.spotify.com/album/3cN1ug7YUdEXfl22D4mFmU" target="_blank" class="btn-copper">
+Spotify
+</a>
+
+<a href="https://www.youtube.com/@vigilandysband" target="_blank" class="btn-copper">
+YouTube
+</a>
+</div>
+</div>
+
+</div>
+</section>
+
+<!-- MERCH -->
+<section id="merch" class="py-24 text-center">
+
+<h2 class="text-4xl mb-10">
+Support Us <span class="text-orange-400">The Old-Fashioned Way</span>
+</h2>
+
+<p class="italic mb-10">Keep the candle burning.</p>
+
+<a href="https://vigilandysband.tpopsite.com/" target="_blank" class="btn-copper">
+Visit Shop
+</a>
+
+</section>
+
+<!-- SOCIAL -->
+<section id="social" class="py-24 text-center">
+
+<h2 class="text-4xl mb-10">
+The <span class="text-yellow-400">Digital Signal</span>
+</h2>
+
+<div class="flex justify-center gap-6 flex-wrap">
+
+<a href="https://open.spotify.com/" target="_blank">Spotify</a>
+<a href="https://instagram.com/vigilandysband" target="_blank">Instagram</a>
+<a href="https://tiktok.com/@vigilandysband" target="_blank">TikTok</a>
+
+</div>
+
+</section>
+
+<!-- JOIN -->
+<section id="vigil" class="py-24 text-center">
+
+<span class="text-yellow-400 text-xs uppercase tracking-widest block mb-4">
+Community
+</span>
+
+<h2 class="text-4xl mb-6">Join The Vigil</h2>
+
+<form action="https://formspree.io/f/YOUR_ID" method="POST"
+class="max-w-md mx-auto flex flex-col gap-4">
+
+<input name="name" placeholder="Name" required
+class="p-3 bg-black border" />
+
+<input name="email" type="email" placeholder="Email" required
+class="p-3 bg-black border" />
+
+<button class="btn-copper">Light The Torch</button>
+
+</form>
+
+</section>
+
+</body>
+</html>
