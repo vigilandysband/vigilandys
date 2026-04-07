@@ -1,187 +1,486 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Vigil Andy's — Keep the Vigils. Up the Ante.</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vigil Andy's — Keep the Vigils. Up the Ante.</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
-<script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            copper:    { DEFAULT: '#b5651d', light: '#cd853f', dark: '#8b4513', ember: '#e87722', glow: '#ff9a3c' },
+            gold:      { DEFAULT: '#c9a84c', light: '#e8c97a', dim: '#8a6f2e' },
+            charcoal:  { DEFAULT: '#1a1a1a', deep: '#0d0d0d', mid: '#2a2828', surface: '#1e1c1c' },
+            ash:       { DEFAULT: '#6b6464', light: '#9e9090' },
+          },
+          fontFamily: {
+            display:  ['Cinzel Decorative', 'serif'],
+            heading:  ['Cinzel', 'serif'],
+            body:     ['EB Garamond', 'serif'],
+            ui:       ['Rajdhani', 'sans-serif'],
+          },
+          animation: {
+            'pulse-copper':  'pulseCopper 3s ease-in-out infinite',
+            'grain':         'grain 0.3s steps(1) infinite',
+          },
+          keyframes: {
+            pulseCopper: {
+              '0%,100%': { boxShadow: '0 0 20px rgba(181,101,29,0.3), 0 0 40px rgba(181,101,29,0.1)' },
+              '50%':     { boxShadow: '0 0 40px rgba(232,119,34,0.6), 0 0 80px rgba(232,119,34,0.2)' },
+            },
+            grain: {
+              '0%,100%': { transform: 'translate(0,0)' },
+              '10%':     { transform: 'translate(-1%,-1%)' },
+              '50%':     { transform: 'translate(1%,1%)' },
+            },
+          },
+        },
+      },
+    };
+  </script>
 
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond&family=Rajdhani&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --copper:     #b5651d;
+      --copper-glow:#e87722;
+      --gold:       #c9a84c;
+      --deep:       #0d0d0d;
+      --charcoal:   #1a1a1a;
+      --surface:    #1e1c1c;
+    }
 
-<style>
-body {
-  background: #0d0d0d;
-  color: #d4c5b0;
-  font-family: 'EB Garamond', serif;
-  overflow-x: hidden;
-}
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--deep);
+      color: #d4c5b0;
+      font-family: 'EB Garamond', serif;
+      overflow-x: hidden;
+    }
 
-/* FIXED grain (no more overlay bug) */
-.grain::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  opacity: 0.03;
-  pointer-events: none;
-  z-index: 0;
-}
+    /* FILM GRAIN */
+    .grain::after {
+      content: '';
+      position: fixed;
+      inset: -50%;
+      width: 200%;
+      height: 200%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: 9999;
+      animation: grain 0.5s steps(1) infinite;
+    }
 
-/* HERO FIX */
-.hero-video-wrap {
-  position: relative;
-  min-height: 100svh;
-  background: #000;
-}
+    /* VIDEO ENGINE */
+    .hero-video-wrap {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background: #000;
+    }
+    #hero-player {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100vw;
+      height: 56.25vw; /* 16:9 aspect */
+      min-height: 100vh;
+      min-width: 177.77vh; /* 16:9 aspect */
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 1;
+    }
 
-#hero-player {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(13,13,13,0.7) 0%, transparent 40%, transparent 60%, rgba(13,13,13,1) 100%);
+      z-index: 2;
+    }
 
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(13,13,13,0.7), rgba(13,13,13,1));
-  z-index: 2;
-}
+    .copper-rule {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--copper) 30%, var(--gold) 50%, var(--copper) 70%, transparent 100%);
+      position: relative;
+    }
 
-.btn-copper {
-  background: linear-gradient(135deg,#e87722,#b5651d);
-  padding: 16px 30px;
-  font-family: Rajdhani;
-  text-transform: uppercase;
-}
+    .section-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--copper);
+    }
 
-/* reveal */
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: 1s;
-}
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-</style>
+    .btn-copper {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--deep);
+      background: linear-gradient(135deg, var(--copper-glow), var(--copper));
+      padding: 18px 38px;
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      text-decoration: none;
+      z-index: 10;
+    }
+    .btn-copper:hover { transform: translateY(-3px); box-shadow: 0 15px 45px rgba(232,119,34,0.4); }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--copper-glow);
+      border: 1px solid var(--copper);
+      padding: 16px 34px;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+    .btn-ghost:hover { background: rgba(181,101,29,0.1); border-color: var(--copper-glow); color: #fff; }
+
+    .merch-card, .social-card {
+      background: var(--surface);
+      border: 1px solid rgba(181,101,29,0.15);
+      transition: all 0.4s;
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+    .merch-card:hover, .social-card:hover { border-color: var(--copper-glow); transform: translateY(-8px); }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 1.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .ember {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--copper-glow);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: emberRise var(--dur) linear forwards;
+    }
+    @keyframes emberRise {
+      0% { transform: translateY(0) scale(1); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-200px) scale(0); opacity: 0; }
+    }
+  </style>
 </head>
 
 <body class="grain">
 
-<!-- HERO -->
-<section class="hero-video-wrap flex items-center justify-center text-center">
+  <!-- NAVIGATION -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-700">
+    <div class="max-w-screen-xl mx-auto px-6 md:px-12 flex items-center justify-between h-20">
+      <a href="#" class="font-display text-xl tracking-[0.4em] text-copper">V·A</a>
+      
+      <div class="hidden md:flex items-center gap-12">
+        <a href="#single" class="nav-link text-[11px] uppercase tracking-[0.3em] text-ash hover:text-copper-glow transition-colors">Copper Island</a>
+        <a href="#merch" class="nav-link text-[11px] uppercase tracking-[0.3em] text-ash hover:text-copper-glow transition-colors">Merch</a>
+        <a href="#social" class="nav-link text-[11px] uppercase tracking-[0.3em] text-ash hover:text-copper-glow transition-colors">Signal</a>
+        <a href="#vigil" class="nav-link text-[11px] uppercase tracking-[0.3em] text-ash hover:text-copper-glow transition-colors">Join</a>
+      </div>
 
-<div class="hero-overlay"></div>
+      <button class="md:hidden text-copper" onclick="toggleMenu()">
+        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>
+      </button>
+    </div>
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="hidden fixed inset-0 bg-black/95 z-40 flex-col items-center justify-center gap-10 text-center">
+      <button class="absolute top-6 right-6 text-copper" onclick="toggleMenu()">
+        <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+      <a href="#single" class="font-heading text-2xl tracking-widest" onclick="toggleMenu()">Copper Island</a>
+      <a href="#merch" class="font-heading text-2xl tracking-widest" onclick="toggleMenu()">Merch</a>
+      <a href="#social" class="font-heading text-2xl tracking-widest" onclick="toggleMenu()">Signal</a>
+      <a href="#vigil" class="font-heading text-2xl tracking-widest" onclick="toggleMenu()">Join the Vigils</a>
+    </div>
+  </nav>
 
-<div class="relative z-10 px-6">
+  <!-- HERO SECTION -->
+  <section class="hero-video-wrap">
+    <div id="hero-player"></div>
+    <div class="hero-overlay"></div>
+    <div id="embers" class="absolute inset-0 z-10"></div>
 
-<h1 style="text-shadow:0 0 40px rgba(200,200,200,0.25);" 
-class="text-5xl md:text-8xl mb-6 reveal">
-VIGIL ANDY'S
-</h1>
+    <div class="absolute inset-0 z-30 flex flex-col items-center justify-center text-center px-6">
+      <div class="reveal" style="position:relative; width:100vw; padding: 48px 0 40px; margin-bottom: 40px;">
+        <!-- Feathered full-width grey band -->
+        <div style="position:absolute;inset:0;background:rgba(50,50,50,0.45);-webkit-mask-image:linear-gradient(to right,transparent 0%,black 18%,black 82%,transparent 100%);mask-image:linear-gradient(to right,transparent 0%,black 18%,black 82%,transparent 100%);backdrop-filter:blur(3px);"></div>
+        <h1 class="font-display text-5xl md:text-8xl lg:text-9xl tracking-tight mb-6" style="position:relative;text-shadow: 0 0 60px rgba(181,101,29,0.4);">
+          VIGIL ANDY'S
+        </h1>
+        <p class="font-body italic text-xl md:text-3xl text-gold-light/80" style="position:relative;">Keep the vigils. Up the ante.</p>
+      </div>
+      <a href="#single" class="btn-copper reveal"><span>Enter</span></a>
+    </div>
+  </section>
 
-<p style="text-shadow:0 0 20px rgba(200,200,200,0.2);" 
-class="text-xl md:text-3xl mb-10 reveal">
-Keep the vigils. Up the ante.
-</p>
+  <!-- COPPER ISLAND FUNNEL -->
+  <section id="single" class="py-32 md:py-52 bg-charcoal-deep relative">
+    <div class="max-w-screen-xl mx-auto px-6">
+      <div class="grid lg:grid-cols-2 gap-24 items-center">
+        <div class="reveal">
+          <!-- Image Wrapper with YouTube thumbnail -->
+          <div class="relative group aspect-video border border-copper/30 overflow-hidden bg-charcoal">
+            <img 
+                src="https://img.youtube.com/vi/XpUi67706ss/maxresdefault.jpg" 
+                class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                alt="Copper Island"
+            >
+            <a href="https://youtu.be/XpUi67706ss?si=93O7M35WToDkTovq" target="_blank" class="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/50 transition-all duration-500">
+              <div class="w-24 h-24 rounded-full border border-copper-glow flex items-center justify-center backdrop-blur-md animate-pulse-copper">
+                <svg width="28" height="28" fill="var(--copper-glow)" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="reveal">
+          <span class="section-label block mb-6">Current Transmission</span>
+          <h2 class="font-display text-4xl md:text-7xl mb-8">Copper <span class="text-copper-glow italic">Island</span></h2>
+          <p class="font-body text-xl md:text-2xl leading-relaxed text-ash-light mb-12">
+            Sun-scorched earth and the aching process of becoming.
+          </p>
+          <div class="flex flex-wrap gap-6">
+            <a href="https://open.spotify.com/album/3cN1ug7YUdEXfl22D4mFmU" target="_blank" class="btn-copper">
+              <span>Listen on Spotify</span>
+            </a>
+            <a href="https://www.youtube.com/@vigilandysband" target="_blank" class="btn-ghost">
+              <span>YouTube</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<a href="#single" class="btn-copper reveal">Enter</a>
+  <div class="copper-rule"></div>
 
-</div>
-</section>
+  <!-- MERCH SECTION -->
+  <section id="merch" class="py-32 md:py-48 bg-charcoal">
+    <div class="max-w-screen-xl mx-auto px-6 text-center">
+      <span class="section-label block mb-6 reveal">Artifacts</span>
+      <h2 class="font-display text-4xl md:text-6xl mb-24 reveal">Support us <span class="text-copper-glow">The Old-Fashioned Way</span></h2>
+      
+      <div class="grid md:grid-cols-3 gap-10">
+        <!-- Bones Tee -->
+        <a href="https://vigilandysband.tpopsite.com/collection/bones" target="_blank" class="merch-card p-12 reveal">
+          <div class="aspect-[3/4] mb-10 bg-charcoal-deep flex items-center justify-center border border-white/5 relative group">
+            <svg class="w-20 h-20 text-copper/10 transition-all duration-700 group-hover:scale-125 group-hover:text-copper/30" fill="none" stroke="currentColor" stroke-width="0.5" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            <div class="absolute bottom-6 section-label opacity-40 text-[9px]">Series: Bones</div>
+          </div>
+          <h3 class="font-heading text-xl tracking-[0.3em] mb-3">BONES</h3>
+          <p class="font-ui text-xs text-ash tracking-widest uppercase">Collection ↗</p>
+        </a>
 
-<!-- SINGLE -->
-<section id="single" class="py-24 px-6 max-w-6xl mx-auto">
+        <!-- Sun Sigil -->
+        <a href="https://vigilandysband.tpopsite.com/collection/likeasun" target="_blank" class="merch-card p-12 reveal" style="transition-delay: 0.1s;">
+          <div class="aspect-[3/4] mb-10 bg-charcoal-deep flex items-center justify-center border border-white/5 relative group">
+            <svg class="w-20 h-20 text-gold/10 transition-all duration-700 group-hover:scale-125 group-hover:text-gold/30" fill="none" stroke="currentColor" stroke-width="0.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/></svg>
+            <div class="absolute bottom-6 section-label opacity-40 text-[9px]">Series: Sun</div>
+          </div>
+          <h3 class="font-heading text-xl tracking-[0.3em] mb-3">LIKE A SUN TEE</h3>
+          <p class="font-ui text-xs text-ash tracking-widest uppercase">Collection ↗</p>
+        </a>
 
-<div class="grid md:grid-cols-2 gap-10 items-center">
+        <!-- Full Shop Card -->
+        <div class="merch-card p-12 flex flex-col justify-center items-center reveal" style="transition-delay: 0.2s;">
+          <p class="font-body italic text-xl text-ash-light mb-12 px-4 leading-loose">"Keep the candle burning."</p>
+          <a href="https://vigilandysband.tpopsite.com/" target="_blank" class="btn-copper w-full">
+            <span>The Shop</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<div>
-<img src="https://img.youtube.com/vi/XpUi67706ss/hqdefault.jpg"
-class="w-full rounded" />
-<a href="https://youtu.be/XpUi67706ss?si=93O7M35WToDkTovq" target="_blank"
-class="block mt-4 text-center btn-copper">
-Play Video
-</a>
-</div>
+  <!-- SOCIAL GRID -->
+  <section id="social" class="py-32 bg-charcoal-deep border-t border-white/5">
+    <div class="max-w-screen-xl mx-auto px-6">
+      <div class="text-center mb-20 reveal">
+        <span class="section-label block mb-6">Network</span>
+        <h2 class="font-display text-4xl tracking-[0.2em]">The <span class="text-gold">Digital Signal</span></h2>
+      </div>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 max-w-6xl mx-auto">
+        <a href="https://open.spotify.com/album/3cN1ug7YUdEXfl22D4mFmU" target="_blank" class="social-card p-12 flex flex-col items-center group reveal">
+          <svg class="w-8 h-8 mb-6 text-ash transition-colors group-hover:text-copper-glow" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.508 17.302c-.218.358-.684.474-1.038.258-2.846-1.74-6.428-2.13-10.647-1.167-.406.094-.816-.16-.91-.564-.093-.406.16-.816.563-.91 4.618-1.056 8.563-.615 11.776 1.348.35.215.466.684.256 1.035zm1.47-3.253c-.276.446-.856.587-1.302.312-3.256-2.002-8.216-2.583-12.064-1.415-.503.153-1.034-.132-1.186-.635-.153-.502.132-1.033.634-1.186 4.408-1.338 9.878-.687 13.606 1.606.448.275.59.855.312 1.303zm.127-3.39c-3.903-2.318-10.334-2.532-14.1-1.388-.6.183-1.235-.16-1.417-.758-.183-.6.16-1.236.758-1.418 4.316-1.31 11.418-1.053 15.908 1.613.54.32.715 1.015.396 1.554-.32.54-1.014.717-1.545.397z"/></svg>
+          <span class="font-ui text-[10px] tracking-[0.4em] uppercase">Spotify</span>
+        </a>
+        <a href="https://instagram.com/vigilandysband" target="_blank" class="social-card p-12 flex flex-col items-center group reveal" style="transition-delay: 0.1s;">
+          <svg class="w-8 h-8 mb-6 text-ash transition-colors group-hover:text-copper-glow" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          <span class="font-ui text-[10px] tracking-[0.4em] uppercase">Instagram</span>
+        </a>
+        <a href="https://tiktok.com/@vigilandysband" target="_blank" class="social-card p-12 flex flex-col items-center group reveal" style="transition-delay: 0.2s;">
+          <svg class="w-8 h-8 mb-6 text-ash transition-colors group-hover:text-copper-glow" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.9-.32-1.98-.23-2.81.31-.72.42-1.24 1.16-1.35 1.98-.1.62-.04 1.27.18 1.85.32.9.98 1.65 1.81 2.09.5.28 1.07.41 1.65.4.9-.02 1.77-.42 2.37-1.1.5-.56.81-1.28.91-2.03.11-1.58.04-3.15.04-4.73 0-5.33-.04-10.66.02-15.99z"/></svg>
+          <span class="font-ui text-[10px] tracking-[0.4em] uppercase">TikTok</span>
+        </a>
+        <a href="https://www.facebook.com/vigilandysband" target="_blank" class="social-card p-12 flex flex-col items-center group reveal" style="transition-delay: 0.3s;">
+          <svg class="w-8 h-8 mb-6 text-ash transition-colors group-hover:text-copper-glow" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          <span class="font-ui text-[10px] tracking-[0.4em] uppercase">Facebook</span>
+        </a>
+      </div>
+    </div>
+  </section>
 
-<div>
-<h2 class="text-4xl mb-6">Copper Island</h2>
+  <!-- NEWSLETTER / JOIN THE VIGIL -->
+  <section id="vigil" class="py-32 md:py-60 bg-charcoal text-center relative overflow-hidden">
+    <div class="max-w-screen-md mx-auto px-6 relative z-10">
+      <span class="section-label block mb-6 reveal" style="color: var(--gold);">Community</span>
+      <h2 class="font-display text-4xl md:text-7xl mb-12 reveal">Join The Vigil</h2>
+      <p class="font-body italic text-ash-light text-xl mb-16 reveal">
+        Keep the vigils. Up the ante.
+      </p>
+      <form class="flex flex-col gap-6 reveal" onsubmit="handleVigil(event)">
+        <div class="flex flex-col sm:flex-row gap-4">
+          <div class="flex-1 text-left">
+            <label class="section-label block mb-2" style="font-size:9px; color: var(--copper);">Name</label>
+            <input type="text" id="vigil-name" placeholder="Name" class="w-full bg-transparent border-b border-copper/40 p-4 font-body text-lg outline-none focus:border-copper-glow transition-colors placeholder:text-ash/50" required>
+          </div>
+          <div class="flex-1 text-left">
+            <label class="section-label block mb-2" style="font-size:9px; color: var(--copper);">Email</label>
+            <input type="email" id="vigil-email" placeholder="Email" class="w-full bg-transparent border-b border-copper/40 p-4 font-body text-lg outline-none focus:border-copper-glow transition-colors placeholder:text-ash/50" required>
+          </div>
+        </div>
+        <div class="flex justify-center mt-4">
+          <button type="submit" class="btn-copper"><span>Light The Torch</span></button>
+        </div>
+      </form>
+      <p id="vigil-confirm" class="hidden mt-12 text-copper-glow font-body italic text-lg">✦ The vigil is lit. We'll find you in the dark.</p>
+    </div>
+  </section>
 
-<p class="mb-8">
-Sun-scorched earth and the aching process of becoming.
-</p>
+  <footer class="py-16 bg-charcoal-deep border-t border-white/5">
+    <div class="max-w-screen-xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8 opacity-40">
+      <div class="text-center md:text-left">
+        <p class="font-ui text-[10px] tracking-widest uppercase mb-2">Vigil Andy's</p>
+        <p class="font-body italic text-xs">Keep the vigils. Up the ante.</p>
+      </div>
+      <div class="flex gap-10">
+        <a href="#single" class="nav-link text-[9px] uppercase tracking-[0.3em] text-ash hover:text-copper-glow transition-colors">Copper Island</a>
+        <a href="#merch"  class="nav-link text-[9px] uppercase tracking-[0.3em] text-ash hover:text-copper-glow transition-colors">Merch</a>
+        <a href="#social" class="nav-link text-[9px] uppercase tracking-[0.3em] text-ash hover:text-copper-glow transition-colors">Signal</a>
+        <a href="#vigil"  class="nav-link text-[9px] uppercase tracking-[0.3em] text-ash hover:text-copper-glow transition-colors">Join</a>
+      </div>
+      <p class="font-ui text-[9px] text-ash/50 tracking-[0.3em] uppercase">© 2025</p>
+    </div>
+  </footer>
 
-<div class="flex gap-4 flex-wrap">
-<a href="https://open.spotify.com/album/3cN1ug7YUdEXfl22D4mFmU" target="_blank" class="btn-copper">
-Spotify
-</a>
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    let player;
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('hero-player', {
+        videoId: '_hPhQTF9KFU',
+        playerVars: { 
+            'autoplay': 1, 
+            'mute': 1, 
+            'controls': 0, 
+            'showinfo': 0, 
+            'modestbranding': 1, 
+            'loop': 1, 
+            'playsinline': 1, 
+            'start': 11,
+            'rel': 0
+        },
+        events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange }
+      });
+    }
 
-<a href="https://www.youtube.com/@vigilandysband" target="_blank" class="btn-copper">
-YouTube
-</a>
-</div>
-</div>
+    function onPlayerReady(event) {
+      event.target.playVideo();
+      // Loop interval logic
+      setInterval(() => {
+        if (player && player.getCurrentTime) {
+          const time = player.getCurrentTime();
+          if (time >= 180) { // 3:00 minute reset
+            player.seekTo(11);
+          }
+        }
+      }, 500);
+    }
 
-</div>
-</section>
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.ENDED) {
+        player.seekTo(11);
+        player.playVideo();
+      }
+    }
 
-<!-- MERCH -->
-<section id="merch" class="py-24 text-center">
+    // Scroll Fade Nav
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('navbar');
+      nav.style.background = window.scrollY > 80 ? 'rgba(13,13,13,0.96)' : 'transparent';
+      nav.style.backdropFilter = window.scrollY > 80 ? 'blur(12px)' : 'none';
+      nav.style.borderBottom = window.scrollY > 80 ? '1px solid rgba(181,101,29,0.1)' : 'none';
+    });
 
-<h2 class="text-4xl mb-10">
-Support Us <span class="text-orange-400">The Old-Fashioned Way</span>
-</h2>
+    // Mobile Menu
+    function toggleMenu() {
+      const m = document.getElementById('mobile-menu');
+      m.classList.toggle('hidden');
+      m.classList.toggle('flex');
+    }
 
-<p class="italic mb-10">Keep the candle burning.</p>
+    // Animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.15 });
 
-<a href="https://vigilandysband.tpopsite.com/" target="_blank" class="btn-copper">
-Visit Shop
-</a>
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-</section>
+    // Form submission — sends to vigilandysband@gmail.com
+    function handleVigil(e) {
+      e.preventDefault();
+      const name  = document.getElementById('vigil-name').value.trim();
+      const email = document.getElementById('vigil-email').value.trim();
+      if (name && email) {
+        const subject = encodeURIComponent('New Vigil Subscriber: ' + name);
+        const body    = encodeURIComponent('Name: ' + name + '\nEmail: ' + email);
+        window.open('mailto:vigilandysband@gmail.com?subject=' + subject + '&body=' + body);
+        document.getElementById('vigil-confirm').classList.remove('hidden');
+        e.target.querySelector('button').style.opacity = '0.5';
+        e.target.querySelector('button').disabled = true;
+      }
+    }
 
-<!-- SOCIAL -->
-<section id="social" class="py-24 text-center">
-
-<h2 class="text-4xl mb-10">
-The <span class="text-yellow-400">Digital Signal</span>
-</h2>
-
-<div class="flex justify-center gap-6 flex-wrap">
-
-<a href="https://open.spotify.com/" target="_blank">Spotify</a>
-<a href="https://instagram.com/vigilandysband" target="_blank">Instagram</a>
-<a href="https://tiktok.com/@vigilandysband" target="_blank">TikTok</a>
-
-</div>
-
-</section>
-
-<!-- JOIN -->
-<section id="vigil" class="py-24 text-center">
-
-<span class="text-yellow-400 text-xs uppercase tracking-widest block mb-4">
-Community
-</span>
-
-<h2 class="text-4xl mb-6">Join The Vigil</h2>
-
-<form action="https://formspree.io/f/YOUR_ID" method="POST"
-class="max-w-md mx-auto flex flex-col gap-4">
-
-<input name="name" placeholder="Name" required
-class="p-3 bg-black border" />
-
-<input name="email" type="email" placeholder="Email" required
-class="p-3 bg-black border" />
-
-<button class="btn-copper">Light The Torch</button>
-
-</form>
-
-</section>
-
+    // Particle Embers
+    function createEmber() {
+      const container = document.getElementById('embers');
+      if (!container) return;
+      const ember = document.createElement('div');
+      ember.className = 'ember';
+      ember.style.left = Math.random() * 100 + '%';
+      ember.style.bottom = '0%';
+      ember.style.setProperty('--dur', (4 + Math.random() * 4) + 's');
+      container.appendChild(ember);
+      setTimeout(() => ember.remove(), 8000);
+    }
+    setInterval(createEmber, 400);
+  </script>
 </body>
 </html>
