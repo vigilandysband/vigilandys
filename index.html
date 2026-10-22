@@ -265,7 +265,7 @@
             <img 
                 src="https://img.youtube.com/vi/Itofmcf7EOI/maxresdefault.jpg" 
                 class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                alt="Soul  Caravan"
+                alt="Soul Caravan"
             >
             <a href="https://www.youtube.com/watch?v=Itofmcf7EOI" target="_blank" class="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/50 transition-all duration-500">
               <div class="w-24 h-24 rounded-full border border-copper-glow flex items-center justify-center backdrop-blur-md animate-pulse-copper">
@@ -276,7 +276,7 @@
         </div>
         <div class="reveal">
           <span class="section-label block mb-6">Current Transmission</span>
-          <h2 class="font-display text-4xl md:text-7xl mb-8">SOUL <span class="text-copper-glow">CARAVAN</span></h2>
+          <h2 class="font-display text-4xl md:text-7xl mb-8">SOUL <span class="text-copper-glow"> CARAVAN</span></h2>
           <p class="font-body text-xl md:text-2xl leading-relaxed text-ash-light mb-12">
             Enjoy the flight!
           </p>
@@ -410,7 +410,7 @@
     let loopTimer;
     const HERO_VIDEO = 'Itofmcf7EOI';
     const HERO_START = 8;      // loop restarts at 0:08
-    const HERO_END   = 82;    // loop ends at 1:22 (60 + 22)
+    const HERO_END   = 80;    // loop ends at 1:20 (60 + 20)
 
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('hero-player', {
@@ -435,7 +435,7 @@
       event.target.mute();
       event.target.playVideo();
 
-      // Watch playback position and jump back to 0:08 when we reach 1:22
+      // Watch playback position and jump back to 0:08 when we reach 1:20
       clearInterval(loopTimer);
       loopTimer = setInterval(() => {
         if (!player || typeof player.getCurrentTime !== 'function') return;
@@ -448,7 +448,7 @@
       }, 250);
     }
 
-    // Fallback: if the video ends on its own (shorter than 1:22), restart at 0:08
+    // Fallback: if the video ends on its own (shorter than 1:20), restart at 0:08
     function onPlayerStateChange(event) {
       if (event.data === YT.PlayerState.ENDED) {
         player.seekTo(HERO_START, true);
