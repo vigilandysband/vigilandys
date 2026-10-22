@@ -408,9 +408,9 @@
   <script>
     let player;
     let loopTimer;
-    const HERO_VIDEO = 'XpUi67706ss';
-    const HERO_START = 9;      // loop restarts at 0:09
-    const HERO_END   = 190;    // loop ends at 3:10 (3*60 + 10)
+    const HERO_VIDEO = 'AnSmBoIC33w';
+    const HERO_START = 8;      // loop restarts at 0:08
+    const HERO_END   = 82;    // loop ends at 1:22 (60 + 22)
 
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('hero-player', {
@@ -435,7 +435,7 @@
       event.target.mute();
       event.target.playVideo();
 
-      // Watch playback position and jump back to 0:09 when we reach 3:10
+      // Watch playback position and jump back to 0:08 when we reach 1:22
       clearInterval(loopTimer);
       loopTimer = setInterval(() => {
         if (!player || typeof player.getCurrentTime !== 'function') return;
@@ -448,7 +448,7 @@
       }, 250);
     }
 
-    // Fallback: if the video ends on its own (shorter than 3:10), restart at 0:09
+    // Fallback: if the video ends on its own (shorter than 1:22), restart at 0:08
     function onPlayerStateChange(event) {
       if (event.data === YT.PlayerState.ENDED) {
         player.seekTo(HERO_START, true);
